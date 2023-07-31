@@ -13,9 +13,9 @@
 # limitations under the License.
 
 
-import logging
-
+import os
 import click
+import logging
 from xoscar.utils import get_next_port
 
 from .. import __version__
@@ -24,6 +24,7 @@ from ..constants import (
     XINFERENCE_DEFAULT_DISTRIBUTED_HOST,
     XINFERENCE_DEFAULT_ENDPOINT_PORT,
     XINFERENCE_DEFAULT_LOCAL_HOST,
+    global_vars
 )
 
 
@@ -33,13 +34,15 @@ from ..constants import (
 @click.option("--log-level", default="INFO", type=str)
 @click.option("--host", "-H", default=XINFERENCE_DEFAULT_LOCAL_HOST, type=str)
 @click.option("--port", "-p", default=XINFERENCE_DEFAULT_ENDPOINT_PORT, type=int)
+@click.option("--cache", "-c", default=global_vars["CACHE_DIR"], type=str)
 def cli(
     ctx,
     log_level: str,
     host: str,
     port: str,
+    cache: str
 ):
-    if ctx.invoked_subcommand is None:
+    if ctx.invoked_subcommand is None and os.path.exists(cache):
         from .local import main
 
         if log_level:
@@ -47,6 +50,7 @@ def cli(
         logging_conf = dict(level=log_level.upper())
 
         address = f"{host}:{get_next_port()}"
+        global_vars["CACHE_DIR"] = cache
 
         main(
             address=address,

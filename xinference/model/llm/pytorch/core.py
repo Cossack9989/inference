@@ -17,7 +17,7 @@ from typing import Iterator, List, Optional, TypedDict, Union
 
 import torch
 
-from ....constants import XINFERENCE_CACHE_DIR
+from ....constants import global_vars
 from ....types import (
     ChatCompletion,
     ChatCompletionChunk,
@@ -124,12 +124,12 @@ class PytorchModel(LLM):
             self.model_path,
             use_fast=self._use_fast_tokenizer,
             revision=kwargs["revision"],
-            cache_dir=XINFERENCE_CACHE_DIR,
+            cache_dir=global_vars["CACHE_DIR"],
         )
         model = AutoModelForCausalLM.from_pretrained(
             self.model_path,
             low_cpu_mem_usage=True,
-            cache_dir=XINFERENCE_CACHE_DIR,
+            cache_dir=global_vars["CACHE_DIR"],
             **kwargs,
         )
         return model, tokenizer

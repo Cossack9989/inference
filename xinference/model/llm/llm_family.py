@@ -19,7 +19,7 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated, Literal
 
-from xinference.constants import XINFERENCE_CACHE_DIR
+from xinference.constants import global_vars
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ def get_legacy_cache_path(
     quantization: Optional[str] = None,
 ) -> str:
     full_name = f"{model_name}-{model_format}-{model_size_in_billions}b-{quantization}"
-    save_dir = os.path.join(XINFERENCE_CACHE_DIR, full_name)
+    save_dir = os.path.join(global_vars["CACHE_DIR"], full_name)
     if not os.path.exists(save_dir):
         os.makedirs(save_dir, exist_ok=True)
     save_path = os.path.join(save_dir, "model.bin")
@@ -114,7 +114,7 @@ def cache_from_huggingface(
     import huggingface_hub
 
     cache_dir_name = f"{llm_family.model_name}-{llm_spec.model_format}-{llm_spec.model_size_in_billions}b"
-    cache_dir = os.path.join(XINFERENCE_CACHE_DIR, cache_dir_name)
+    cache_dir = os.path.join(global_vars["CACHE_DIR"], cache_dir_name)
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir, exist_ok=True)
 
